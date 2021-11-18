@@ -5,7 +5,7 @@ class ConstantPoolTag(Enum):
     CLASS = 7
     FIELD_REF = 9
     METHOD_REF = 10
-    INTRFACE_METHOD_REF = 11
+    INTERFACE_METHOD_REF = 11
     STRING = 8
     INTEGER = 3
     FLOAT = 4
