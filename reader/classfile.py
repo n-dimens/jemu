@@ -5,6 +5,42 @@ from reader.binary import read_u4
 from reader.constantpool import *
 
 
+def parse_class_file(file: BinaryIO) -> dict:
+    """Чтение class-файла"""
+    class_file = {}
+    class_file['magic'] = read_u4(file)
+    class_file['minor_version'] = read_u2(file)
+    class_file['major_version'] = read_u2(file)
+    class_file['constant_pool_count'] = read_u2(file)
+    class_file['constant_pool'] = []
+    for i in range(class_file['constant_pool_count'] - 1):
+        class_file['constant_pool'].append(read_cp_info(file))
+    class_file['access_flags'] = read_u2(file)
+    class_file['this_class'] = read_u2(file)
+    class_file['super_class'] = read_u2(file)
+    class_file['interfaces_count'] = read_u2(file)
+    class_file['interfaces'] = []
+    for i in range(class_file['interfaces_count']):
+        class_file['interfaces'].append(read_u2(file))
+
+    class_file['fields_count'] = read_u2(file)
+    class_file['fields'] = []
+    for i in range(class_file['fields_count']):
+        class_file['fields'].append(read_field_info(file))
+
+    class_file['methods_count'] = read_u2(file)
+    class_file['methods'] = []
+    for i in range(class_file['methods_count']):
+        class_file['methods'].append(read_method_info(file))
+
+    class_file['attributes_count'] = read_u2(file)
+    class_file['attributes'] = []
+    for i in range(class_file['attributes_count']):
+        class_file['attributes'].append(read_attribute_info(file))
+
+    return class_file
+
+
 def read_cp_info(file: BinaryIO) -> dict:
     tag = ConstantPoolTag(read_u1(file))
     if tag == ConstantPoolTag.CLASS:
