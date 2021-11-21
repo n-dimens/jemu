@@ -17,5 +17,5 @@ if __name__ == '__main__':
     # pprint.pprint(class_info.methods)
     for m in class_info.methods:
         print(f"{m['name']} : {m['descriptor']}")
-        print(m['code'])
+        # print(m['code'])
     # print("\n".join(format_raw_class(raw_class_info)))

@@ -1,3 +1,4 @@
+from core.instructions import obtain_instruction
 from reader.binary import CollectionReader, bytes_to_int, read_u4, read_u2
 
 
@@ -41,6 +42,7 @@ def extend_code_attr(constant_pool, raw_info):
     code_length = bytes_to_int(reader.read(4))
     code_info['code_length'] = code_length
     code_info['code'] = reader.read(code_length)
+    parse_code(code_info['code'])
 
     exceptions_length = bytes_to_int(reader.read(2))
     code_info['exceptions'] = reader.read(exceptions_length)
@@ -52,6 +54,13 @@ def extend_code_attr(constant_pool, raw_info):
         code_info['attributes'].append(extend_attribute_info(constant_pool, raw_attribute))
 
     return code_info
+
+
+def parse_code(raw_code):
+    reader = CollectionReader(raw_code)
+    while reader.has_next():
+        opcode = bytes_to_int(reader.read(1))
+        print(obtain_instruction(opcode, reader))
 
 
 def extend_line_number_table_attr(raw_info):

@@ -18,7 +18,7 @@ def read_u4(file) -> int:
 
 
 def bytes_to_int(bytes_: bytes) -> int:
-    return int.from_bytes(bytes_, "big")
+    return int.from_bytes(bytes_, "big", signed=False)
 
 
 class CollectionReader:
@@ -26,7 +26,7 @@ class CollectionReader:
         self.data = data
         self.position = 0
 
-    def read(self, length=1):
+    def read(self, length):
         right = self.position + length
         if right > len(self.data):
             right = len(self.data)
