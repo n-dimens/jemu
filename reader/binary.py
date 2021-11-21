@@ -2,7 +2,7 @@ from typing import BinaryIO
 
 
 def read_bytes(file: BinaryIO, size: int) -> int:
-    return int.from_bytes(file.read(size), "big")
+    return bytes_to_int(file.read(size))
 
 
 def read_u1(file: BinaryIO) -> int:
@@ -15,3 +15,25 @@ def read_u2(file: BinaryIO) -> int:
 
 def read_u4(file: BinaryIO) -> int:
     return read_bytes(file, 4)
+
+
+def bytes_to_int(bytes_: bytes) -> int:
+    return int.from_bytes(bytes_, "big")
+
+
+class CollectionReader:
+    def __init__(self, data):
+        self.data = data
+        self.position = 0
+
+    def read(self, length=1):
+        right = self.position + length
+        if right > len(self.data):
+            right = len(self.data)
+
+        data = self.data[self.position:right]
+        self.position += length
+        return data
+
+    def has_next(self):
+        return self.position < len(self.data)

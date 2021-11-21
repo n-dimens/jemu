@@ -2,6 +2,7 @@
 from typing import List
 
 from core.constant_pool import ConstantPool
+from reader.binary import CollectionReader, bytes_to_int
 
 
 class ClassFile:
@@ -80,38 +81,21 @@ class CodeAttributeExtender:
         self.constant_pool = constant_pool
 
     def extend(self, raw_info: bytearray):
+        reader = CollectionReader(raw_info)
         code_info = {
-            'max_stack': read_u2(raw_info, 0),
-            'max_locals': read_u2(raw_info, 2),
+            'max_stack': bytes_to_int(reader.read(2)),
+            'max_locals': bytes_to_int(reader.read(2)),
             'size': len(raw_info)
         }
 
-        code_length = read_u4(raw_info, 4)
-        code_last_index = 8 + code_length
+        code_length = bytes_to_int(reader.read(4))
         code_info['code_length'] = code_length
-        code_info['code'] = raw_info[8:code_last_index]
+        code_info['code'] = reader.read(code_length)
 
-        exceptions_length = read_u2(raw_info, code_last_index)
-        exceptions_last_index = 2 + code_last_index + exceptions_length
-        code_info['exceptions'] = raw_info[(code_last_index + 2):exceptions_last_index]
+        exceptions_length = bytes_to_int(reader.read(2))
+        code_info['exceptions'] = reader.read(exceptions_length)
 
-        attributes_count = read_u2(raw_info, exceptions_last_index)
+        attributes_count = bytes_to_int(reader.read(2))
         code_info['attributes_count'] = attributes_count
-        code_info['attributes'] = raw_info[exceptions_last_index:(exceptions_last_index + attributes_count)]
+        code_info['attributes'] = reader.read(attributes_count)
         return code_info
-
-
-def read_u1(bytes_: bytearray, index: int) -> int:
-    return read_int(bytes_, index, 1)
-
-
-def read_u2(bytes_: bytearray, index: int) -> int:
-    return read_int(bytes_, index, 2)
-
-
-def read_u4(bytes_: bytearray, index: int) -> int:
-    return read_int(bytes_, index, 4)
-
-
-def read_int(bytes_: bytearray, index: int, length: int) -> int:
-    return int.from_bytes(bytes_[index:(index + length)], "big")
