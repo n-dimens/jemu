@@ -1,19 +1,19 @@
 from typing import BinaryIO
 
 
-def read_bytes(file: BinaryIO, size: int) -> int:
+def read_bytes(file, size: int) -> int:
     return bytes_to_int(file.read(size))
 
 
-def read_u1(file: BinaryIO) -> int:
+def read_u1(file) -> int:
     return read_bytes(file, 1)
 
 
-def read_u2(file: BinaryIO) -> int:
+def read_u2(file) -> int:
     return read_bytes(file, 2)
 
 
-def read_u4(file: BinaryIO) -> int:
+def read_u4(file) -> int:
     return read_bytes(file, 4)
 
 

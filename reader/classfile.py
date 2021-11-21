@@ -1,5 +1,6 @@
 from typing import BinaryIO
 
+from core.attributes import read_attribute_info
 from core.enums import ConstantPoolTag
 from reader.binary import read_u4
 from reader.constantpool import *
@@ -100,13 +101,3 @@ def read_method_info(file):
         method_info['attributes_info'].append(read_attribute_info(file))
     return method_info
 
-
-def read_attribute_info(file) -> dict:
-    attribute_info = {
-        'name_index': read_u2(file),
-        'length': read_u4(file),
-        'info': [],
-    }
-    for i in range(attribute_info['length']):
-        attribute_info['info'].append(read_u1(file))
-    return attribute_info
